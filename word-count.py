@@ -1,4 +1,10 @@
+import re
 from pyspark import SparkConf, SparkContext
+
+
+def normalizeWords(text):
+    return re.compile(r'\W+', re.UNICODE).split(text.lower())
+
 
 # initialize spark context
 conf = SparkConf().setMaster('local').setAppName('wordcount')
@@ -8,7 +14,7 @@ sc = SparkContext(conf=conf)
 input = sc.textFile('/Users/dennomwas/Documents/Projects/spark/Book.txt')
 
 # create an RDD
-words = input.flatMap(lambda x: x.split())
+words = input.flatMap(normalizeWords)
 
 # Transform the RDD
 word_count = words.countByValue()
